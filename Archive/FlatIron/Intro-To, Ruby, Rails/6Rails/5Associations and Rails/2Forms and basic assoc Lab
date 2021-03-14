@@ -1,0 +1,226 @@
+# lab
+
+### schema
+
+```ruby
+ActiveRecord::Schema.define(version: 20160114013240) do
+
+  create_table "artists", force: :cascade do |t|
+    t.string   "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "genres", force: :cascade do |t|
+    t.string   "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "notes", force: :cascade do |t|
+    t.string   "content"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer  "song_id"
+  end
+
+  create_table "songs", force: :cascade do |t|
+    t.string   "title"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer  "artist_id"
+    t.integer  "genre_id"
+  end
+
+end
+```
+
+### relations/models
+
+```ruby
+class Artist < ActiveRecord::Base
+  has_many :songs
+end
+
+class Genre < ActiveRecord::Base
+  # add associations
+  has_many :songs
+end
+
+class Note < ActiveRecord::Base
+  # add associations here
+  belongs_to :song
+end
+```
+
+### song model
+
+```ruby
+class Song < ActiveRecord::Base
+  belongs_to :artist
+  belongs_to :genre
+  has_many :notes
+
+  def artist_name=(name)
+    self.artist = Artist.find_or_create_by(name: name)
+      #we want to make sure there isn't already an artist with the same name in our data base so we use the find_or_create_by method
+  end
+
+  def artist_name
+    self.artist ? self.artist.name : nil
+      #here it will evalute if self.artist returns true if it does then self.artist.name else nil, when we call the method in our strong params it will run this getter method and set the value of Song.artist.name = to the value in the artist name field on our form
+  end
+
+  def genre_id=(id)
+    self.genre = Genre.find_by(id: id)
+      #because we already have all the genres in our data base, we wont give user the option to create a new one
+      #this method simply finds the genre selected in the drop down menu by the id.
+  end
+
+  def notes=(notes)
+      #when this method is called by the Strong(params) it will iterate over the value of each note Song => {notes = > ["note", "note2", "note3"]} THIS looks like song[notes][] in the form
+    notes.each do |n|
+      note = Note.create(content: n)
+        #then we set note equal to a new Note object we create here setteing content attribute = to each element in the array
+        self.notes << note 
+        #then we shove note into our proxycollection Song.notes so we can now call @song.notes wich will return and array or proxy colletion 
+        self.save
+        #then we persist the above change to the Song object to our data base
+    end
+  end
+end
+```
+
+### forms
+
+```erb
+<!--app/views/songs/edit-->
+<h1>All songs</h1>
+
+<% @songs.each do |song| %>
+  <span class=song-title><%= song.title %></span>
+  <span class=song-artist><%= song.try(:artist).try(:name) %></span>
+  <span class=song-genre><%= song.try(:genre).try(:name) %></span>
+  <ul class=song-notes>
+    <% song.try(:notes).try :each do |note| %>
+      <li class=song-note><%= note.content %></li>
+    <% end %>
+  </ul>
+
+<% end %>
+
+<!--app/views/songs/index-->
+<h1>Editing <%= @song.title %></h1>
+
+<%= form_for @song  do |f| %>
+  <%= f.label :title %>
+  <%= f.text_field :title %>
+  <br />
+
+  <%= f.submit %>
+<% end %>
+
+<!--app/views/songs/new-->
+<h1>Create a Song</h1>
+
+<%= form_for @song  do |f| %> <br>
+  <%= f.label :title %> <br>
+  <%= f.text_field :title %> <br>
+  <%= f.label :artist_name %> <br>
+<!--this will intercept and use our setter method in Song model instead of AR method-->
+  <%= f.text_field :artist_name %> <br>
+  <%= f.label :genre_id %>
+  <%= f.collection_select :genre_id, Genre.all, :id, :name %><br>
+<!--the boiler plate for the collections helper looks like this: 
+
+collection_select**(object, method, collection, value_method, text_method, options = {}, html_options = {})-->
+	
+  <%= f.label :notes %> <br>
+  <input id="song_notes_1" name="song[notes][]">
+  <input id="song_notes_2" name="song[notes][]">
+<!--this simply just submits an array called notes in a song hash to params-->
+
+  <%= f.submit %>
+<% end %>
+
+<!--app/views/songs/show-->
+<h1><%= @song.title %></h1>
+<h2><%= @song.artist_name %></h2>
+<h3><%= @song.genre_id %></h3>
+<%= @song.notes.each do |n| %>
+<p><%= n %></p>
+<% end %>
+
+```
+
+# collection_select
+
+`**collection_select**(object, method, collection, value_method, text_method, options = {}, html_options = {})` *public*
+
+Returns `<select>` and `<option>` tags for the collection of existing return values of `method` for `object's` class. The value returned from calling `method` on the instance `object` will be selected. If calling `method` returns `nil,` no selection is made without including `:prompt` or `:include_blank` in the `options` hash.
+
+The `:value_method` and `:text_method` parameters are methods to be called on each member of `collection`. The return values are used as the `value` attribute and contents of each `<option>` tag, respectively. They can also be any object that responds to `call,` such as a `proc,` that will be called for each member of the `collection` to retrieve the value/text.
+
+### controller
+
+```ruby
+class SongsController < ApplicationController
+  def index
+    @songs = Song.all
+  end
+
+  def show
+    @song = Song.find(params[:id])
+  end
+
+  def new
+    @song = Song.new
+  end
+
+  def create
+    @song = Song.new(song_params)
+
+    if @song.save
+      redirect_to @song
+    else
+      render :new
+    end
+  end
+
+  def edit
+    @song = Song.find(params[:id])
+  end
+
+  def update
+    @song = Song.find(params[:id])
+
+    @song.update(song_params)
+
+    if @song.save
+      redirect_to @song
+    else
+      render :edit
+    end
+  end
+
+  def destroy
+    @song = Song.find(params[:id])
+    @song.destroy
+    flash[:notice] = "Song deleted."
+    redirect_to songs_path
+  end
+
+  private
+
+  def song_params
+    params.require(:song).permit(:title, :artist_name, :genre_id, notes: [])
+   #with our attribute notes: we have to use an empty array to map over because permit only passes singular data types such as:
+      #:name scalar, holds a value similar to name => "cameron"
+    #but you can delare that the paramater show be and of scalars be mapping it to an empty array hence notes: []
+  end
+end
+```
+
+`:name` passes if it is a key of `params` whose associated value is of type `String,` `Symbol,` `NilClass,` `Numeric,` `TrueClass,` `FalseClass,` `Date,` `Time,` `DateTime,` `StringIO,` `IO,` +[ActionDispatch::Http::UploadedFile+](https://apidock.com/rails/ActionDispatch/Http/UploadedFile) or +Rack::Test::UploadedFile+. Otherwise, the key `:name` is filtered out.
+
+You may declare that the parameter should be an array of permitted scalars by mapping it to an empty array:

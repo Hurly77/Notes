@@ -1,0 +1,97 @@
+### Client-Side Routing
+
+**Client-Side** routing is a different beast than what we are used to with traditional server side routing that comes with **Rails**, **Sinatra**, or **Node/Express**, because we aren't making constant **HTTP GET** requests.
+
+Lets say that our **Client-Side** app is going to have these routes
+
+```http
+Links =>
+https://www.movie-maker-2016/movies/new
+https://www.movie-maker-2016/movies
+https://www.movie-maker-2016/about
+https://www.movie-maker-2016/login
+```
+
+Our server’s only Job is to render HTML
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Movie Maker 2016</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  </head>
+  <body>
+    <div id="container"></div>
+    <script src="./bundle.js" charset="utf-8"></script>
+  </body>
+</html>
+```
+
+With **Client-Side** routing, it is now the responsibility of the **Client-Side-Code**, rather than the server, to handle the routing, fetching and displaying of the data in the browser.
+
+**Imagine** you've built a personal blog with a navigation that links your home page, about page and contact page. With Client-Side routing, you might get all the needed data to render all three pages on the first page load. Then, when a user clicks around your site, the **Client**-**Side** router swaps the 'home page' component with the 'about page' component and renders faster than it would if you were requesting a separate page from a server.
+
+### Single Page App (SPA)
+
+In **React** we will likely be building an **SPA**, or Single Page Application. This means we won't require multiple pages to be loaded from the server, just the original **GET** request with our initial HTML, CSS and JS files. This requires us to figure out how to make the experience of Client-Side routing work to our advantage.
+
+There are a couple of things that we need to take into consideration:
+
+- We want to make sure that we have a URL that displays what the user is doing at that moment. So if they are viewing a bio page it might look like this `https://worlds-best-app/bio` instead of this `https://worlds-best-app`.
+- We want a user to be able to use the browser's back and forward buttons with ease.
+- We want a user to be able to input a URL into the address bar and navigate to the view they need to see.
+
+### Limits of Client-Side routing
+
+So this all sounds great, but what are the **limitations?**
+
+- Loading of CSS & Javascript
+
+Since we are now **loading all of our CSS and JavaScript** on the initial **GET** request it can take a while to load our first page. This can be important as the first page load can take a long time if you have a huge application.
+
+- Analytics
+
+**Analytic tools** normally track page views, but an **SPA** doesn't have pages in the traditional sense, so this makes it harder for Analytical tools to track page views. We will need to add extra scripts to handle this limitation.
+
+- They are much harder to design.
+
+We have to plan out all the possibilities that might happen on the **Client-Side**; this might feel like we are repeating designs that we have already completed with our server routes and models.
+
+#### Push it, Push it
+
+With the JavaScript's History API we also have the ability to **pushState()** to the history entries. This method takes in three parameters: **pushState(state, title, url)**
+
+- state object:
+
+This is a plain JavaScript object that is associated with the new history entry we are going to create with the **pushState()** function.
+
+- title:
+
+This is currently ignored by most browsers and it is safe to just pass an empty string or a title here.
+
+- url:
+
+This is the URL for the new history entry. The browser will not attempt to load this URL after it calls pushState().
+
+Why don't we go ahead and create a new url in our browser
+
+```js
+const newState = {  goal: "Learn about pushState()"}; 
+window.history.pushState(newState, "new state", "new-state");
+```
+
+You should notice that your browser has now changed to show `new-state` at the end of your URL address.
+
+Go ahead and type
+
+```js
+window.history.state
+```
+
+It should return
+
+```js
+Object { goal: "Learn about pushState()" }
+```

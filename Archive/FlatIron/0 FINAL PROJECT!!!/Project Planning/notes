@@ -1,0 +1,18 @@
+```js
+fetch('http://localhost:3000/registrations', {
+method: 'POST',
+ headers: {
+        'Content-Type' : 'application/json'
+      },
+      body: JSON.stringify({
+          user: {
+            first_name: "cameron",
+    last_name: "non-yay",
+    email: "don't@me.com",
+    passoword: "123",
+    password_confirmation: "123"   
+          }
+}, {withCredentials: true})
+}).thr => r.json())
+```
+

@@ -1,0 +1,30 @@
+## `WINDOW`
+
+The `window` is a variable that points to an object that represents Chrome's info about the browser. The `Window` is where things are defined(`array`, `string` and `number`)
+
+In the `window`, java script also tracks operating system browser information like:
+
+```javascript
+window.innerHeight;
+// returns the inner height of the browser window.
+```
+
+Like any other object `window` has methods.
+
+We want, rather, to change content. We're going to focus on an object called `document`.
+
+## `document`
+
+As an object, `document` has properties 
+
+```javascript
+document.URL //=> http://www.flatironschool.com
+```
+
+As an *object* `document` also has *methods*:
+
+```javascript
+document.write("Moof") //=> Removes all existing DOM content, replaces it with "Moof"
+```
+
+The ***methods*** and ***properties*** that the DOM provides via its objects is called the DOM's "**Application Programming Interface**," or "**API**." It's just a programming word that you're likely to see online. But it just means "the things that these objects know how to do."

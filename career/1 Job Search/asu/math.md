@@ -1,0 +1,1 @@
+![img](https://doza.pro/art/math/algebra/img/table-degrees-1-1.png)

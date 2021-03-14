@@ -1,0 +1,1 @@
+**Every input** or out put of a computer is effectively a type of info wich can be represented by **on or off electricl signals.**

@@ -1,0 +1,86 @@
+# Overview
+
+React has two Types of **properties**: **props** and **state**. Props are given to the component by its parent.
+
+Props - Are like an external influence that the component has no control over
+
+State- is like an internal influence, state can change in conjunction to the props changing or when the user interacts with the component. 
+
+The **component** **lifecycle** is broadly split into three parts: **creation**, **updating**, and **deletion**.
+
+## Lifecycle Hooks and Rendering
+
+With React you get access to built-in events in the React component lifecycle called **lifecycle hooks** or **lifecycle methods**, this allows us to control how our app **does** or **doesn’t** **react** to changes in the app.
+
+we only require the `render()` method to have a valid React component, which describes what the HTML should look like
+
+![image-20201010134715712](C:\Users\camer\AppData\Roaming\Typora\typora-user-images\image-20201010134715712.png)
+
+## Pre-mounting
+
+components at their core are just JS classes. So even before mounting has begun, the class’s `constructor` function is called.
+
+`constructor` function is not related to mounting to the DOM, but it is the first function called upon the initialization.
+
+## Mounting
+
+when the component is initially created it gets mounted to the DOM: the component figures out what its initial stat is and then renders its initial **JSX** to the page. At the mounting stage there are two lifecycle hooks available: `static getDerivedStateFromProps`, and `componentDidMount`
+
+after the `constructor` is called, `static getDerivedStateFromProps` will get called before `render`.This will allow us to modify and return state before a component is rendered. this method will be called every time a component renders, including the initial render and all subsequent re-renders of content. This is a rare case the we would use it.  
+
+we want to render any content to the user before we update the state. After the `constructor` and `static getDrivedStateFromProps`, `render` is invoked. most often return JSX so that React can insert tot into the DOM.
+
+The `componentDidMount` method will get called just after `render`. this is used for any long running process or asynchronous processes such as fetching and updating data. 
+
+## updating
+
+if  a component state  or props are changed it gets re-rendered on the page. The `static getDerivedStateFromProps()` is invoked before anything else when updating a component, and again, is available for rare situations
+
+The `shouldComponentUpdate` method is invoked just before the component is about to re-render. At this stage, you can compare the old and new props and state and prevent unnecessary re-renders: if the changes in state and/or props don't actually alter the component that's being shown to the user, there is no point "repainting" it as it is an unnecessary performance drain.
+
+After the first two hooks, `render` is called, returning the JSX for React. React uses this JSX to figure out what to display on the page.
+
+*Just* before updating, `getSnapshotBeforeUpdate` is invoked. The `getSnapshotBeforeUpdate` method returns a 'snapshot' that can be used in the final update lifecycle method, `componentDidUpdate`.
+
+The `componentDidUpdate` method is called just after the component is rendered and updated. It is possible in `componentDidUpdate` to take some actions without triggering a re-render of the component, such as focusing on a specific form input.
+
+## Unmounting
+
+At the unmounting stage, the component gets deleted and cleared out of the page. The only lifecycle hook at this stage is `componentWillUnmount` this is called just before component gets deleted. this is used to clear out any stuff set up in `componentDidMount`.
+
+
+
+#### Mounting lifecycle methods
+
+Called once on initial render:
+
+|               Method                | current props and state | prevProps | prevState | nextProps | nextState | Can call `this.setState` |                         Called when?                         |                           Used for                           |
+| :---------------------------------: | :---------------------: | :-------: | :-------: | :-------: | :-------: | :----------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+|            `constructor`            |           no            |    no     |    no     |    no     |    no     |            no            | once, just before `static getDerivedStateFromProps()` is called for the first time |                    Setting initial state                     |
+| `static getDerivedStateFromProps()` |           yes           |    no     |    no     |    no     |    no     |           yes            |    right before the initial render and **all** re-renders    |                        Not used often                        |
+|             `render()`              |           yes           |    no     |    no     |    no     |    no     |            no            |       every time React updates and commits to the DOM        |                  Writing JSX for components                  |
+|         `componentDidMount`         |           yes           |    no     |    no     |    no     |    no     |           yes            |                  once, just after mounting                   | setting up side effects (e.g. creating new DOM elements or setting up asynchronous functions |
+
+#### Updating lifecycle methods
+
+Not called on initial render, but always called whenever a subsequent re-render is triggered:
+
+|               Method                | current props and state | prevProps | prevState | nextProps | nextState | Can call `this.setState` |                         Called when?                         |                           Used for                           |
+| :---------------------------------: | :---------------------: | :-------: | :-------: | :-------: | :-------: | :----------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+| `static getDerivedStateFromProps()` |           yes           |    no     |    no     |    no     |    no     |           yes            |                     before every render                      |                        Not used often                        |
+|       `shouldComponentUpdate`       |           yes           |    no     |    no     |    yes    |    yes    |           yes            |            before every re-render (not initially)            | can be used to stop unnecessary re-renders for performance optimization |
+|      `getSnapshotBeforeUpdate`      |           yes           |    yes    |    yes    |    no     |    no     |           yes            | just before React updates and commits new content to the DOM |  used rarely; can capture data that may be changing rapidly  |
+|        `componentDidUpdate`         |           yes           |    yes    |    yes    |    no     |    no     |           yes            |             just after a re-render has finished              | any DOM updates following a render (mostly interacting with 3rd party libraries) |
+
+Current props and state are always available through `this.props` and `this.state`. Some of these methods have access to previous props and state, or the next props and state. In these cases, the props and state are being passed into the method by React.
+
+#### Dismounting lifecycle method
+
+Called only once, just before the component is removed from the DOM:
+
+|         Method         | current props and state | prevProps | prevState | nextProps | nextState | Can call `this.setState` |                    Called when?                     |                        Used for                         |
+| :--------------------: | :---------------------: | :-------: | :-------: | :-------: | :-------: | :----------------------: | :-------------------------------------------------: | :-----------------------------------------------------: |
+| `componentWillUnmount` |           yes           |    no     |    no     |    no     |    no     |           n/a            | once, just before component is removed from the DOM | destroying any side effects set up in componentDidMount |
+
+## Resources
+

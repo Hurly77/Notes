@@ -1,0 +1,65 @@
+## Lesson
+
+Take a look at the included repo. You should notice the same piece of view code in a few places.
+
+```erb
+<ul>
+  <li> <%= @author.name %></li>
+  <li> <%= @author.hometown %></li>
+</ul>
+<!--we can take this code and put it into a patial-->
+<!--app/authors/_author.html.erb-->
+<!--then all we have to do is call :-->
+<%= render 'authors' %>
+```
+
+## The Problem
+
+In `app/views/authors/show.html.erb` our source of information about `.name` and `.hometown` is `@author`; in `app/views/posts/show.html.erb` the source of information about `.name` and `.hometown` is `@post.author`.
+
+The `locals` parameter to `render` provides this flexibility.
+
+This is what the entire show view, `app/views/posts/show.html.erb`, looks like when `locals` are used:
+
+```erb
+Information About the Post
+<%= render partial: "authors/author", locals: {post_author: @author} %>
+<%= @post.title %>
+<%= @post.content %>
+```
+
+Notice a few things:
+
+1. We are no longer passing the render method a `String`; we're passing key-value pairs
+2. The first key-value pair tells Rails the name of the partial to render (`"authors/author"`)
+3. The second key-value pair specifies the `locals` as a `Hash`. That `Hash`'s keys (`post_author` here) will be created as local variables *within the partial*.
+
+When we **use locals**, we need to **make sure** that the **variables** we refer to **in our partia**l have the **same** names **as** the **keys in our locals hash**.
+
+In our example partial, `app/views/author/_author.html.erb`, we need to change our code from
+
+```erb
+<ul>
+  <li> <%= @author.name %></li>
+  <li> <%= @author.hometown %></li>
+</ul>
+<!--to:-->
+
+<ul>
+  <li> <%= post_author.name %></li>
+  <li> <%= post_author.hometown %></li>
+</ul>
+```
+
+In the `locals` `Hash`, the `post_author:` key is the **argument** name, and the **value** of that **argument**, `@author`, is the **value stored as** `post_author` and passed into the method. We can name the keys whatever we want.
+
+we can **completely eliminate** the `@author = @post.author` line in the `posts#show` controller action, instead **only accessing that data where we need it**, in the partial.
+
+```erb
+<!--app/views/posts/show.html.erb-->
+Information About the Post
+<%= render partial: "authors/author", locals: {post_author: @post.author} %>
+<%= @post.title %>
+<%= @post.content %>
+```
+
