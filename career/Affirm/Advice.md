@@ -11,7 +11,7 @@
 >
 > Always ask for feedback of how you could have been a stronger candidate. I almost never get this request, but it is likely if I did, I'd probably spend an hour or so crafting a message meant to help the candidate. Some companies will be too afraid to provide a response, but it would be worth your effort to ask.
 
-**what size teams have you worked on**
+**what size teams have you worked on**?
 
 > 'So far, I've yet to work on a team. Part of why I'm asking to interview at your company is I'm hoping to change from working solo to working on a small team ...'
 >

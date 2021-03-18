@@ -58,3 +58,16 @@ difference mindset from unit testing
   - defines process for different groups to interact
 - in this course, only developers, so TDD!
 
+## Testing Library and Accessibility
+
+- Testing Library recommends finding elements by accessibility handles.
+  - https://testing-library.com/docs/guide-which-query/
+- create-react-app’s example test users `getByText` 
+  - ok for non-interactive elements
+  - better: `getByRole`
+- Roles documentation: https://www.w3.org/TR/wai-aria/#role_definitions
+  - some elements have built-in roles: `button, a` 
+- Can’t find an element like a screen reader would?]
+  - Then your app isn’t friendly to screen readers
+- Much more about queries and roles latter
+
