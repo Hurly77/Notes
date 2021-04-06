@@ -78,3 +78,15 @@ $$
 - [ ] Space time tradeoffs: Hastables usually solve this a lot of the times. You use more space, but you can get a time optimization to the process. In programming, you often times can use up a little bit more space to get faster time
 
 And always remember: Communicate your thought process as much as possible. Don’t worry about finishing it fast. Every part of the interview matters
+
+Hurly77-group-route
+  Routes/basic-UI
+  UI/UX-Routes
+  add-component-folder
+  fix-deploy-error
+  fix-refresh
+  hot-fix-import
+  hotfix
+  main
+
+* next
