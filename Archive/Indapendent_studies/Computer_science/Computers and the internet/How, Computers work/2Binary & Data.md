@@ -1,4 +1,4 @@
-##### How do you store or represint infomation using electricity?
+##### How do you store or represent information using electricity?
 
 **Binary task for ask two this** 
 

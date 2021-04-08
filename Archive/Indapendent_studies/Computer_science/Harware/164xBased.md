@@ -1,4 +1,4 @@
-**ASCII** abreviated from - **American Standard Code for Information Interchange**,
+**ASCII** abbreviated from - **American Standard Code for Information Interchange**,
 
 ASCII codes represent text in computers, [telecommunications equipment](https://en.wikipedia.org/wiki/Telecommunications_equipment), and other devices. Most modern character-encoding schemes are based on ASCII, although they support many additional characters
 
