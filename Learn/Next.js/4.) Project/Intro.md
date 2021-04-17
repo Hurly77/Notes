@@ -55,6 +55,8 @@ export const getStaticProps = async () => {
 export default HomePage
 ```
 
+## `pages/events/index.js`
+
 ```js
 import { Fragment, useState, useEffect } from 'react';
 import {useRouter} from 'next/router'
@@ -146,5 +148,92 @@ export const getStaticPaths = async () => {
 };
 
 export default event;
+```
+
+## `pages/events/[...slug]`
+
+Here we use SeverSide rendering, but later will optimize this to be client Side Rendering.
+
+```jsx
+const slug = (props) => {
+ 
+  if (props.hasError) {
+    return (
+      <Fragment>
+        <ErrorAlert>
+          <p>invalid filter</p>
+        </ErrorAlert>
+        <div className={'center'}>
+          <Button link={'/events'}>Show all Events</Button>
+        </div>
+      </Fragment>
+    );
+  }
+
+  const filteredEvents = props.events;
+
+  if (!filteredEvents || filteredEvents.length === 0) {
+    return (
+      <Fragment>
+        <ErrorAlert>
+          <p>No Events found for filter</p>
+        </ErrorAlert>
+        <div className={'center'}>
+          <Button link={'/events'}>Show all Events</Button>
+        </div>
+      </Fragment>
+    );
+  }
+
+  const date = new Date(props.date.year, props.date.month);
+
+  return (
+    <Fragment>
+      <ResultsTitle date={date} />
+      <EventList items={filteredEvents} />
+    </Fragment>
+  );
+};
+
+export const getServerSideProps = async (context) => {
+  const { params } = context;
+  const filterData = params.slug;
+
+  const fliteredYear = filterData[0];
+  const fliteredMonth = filterData[1];
+
+  const numYear = +fliteredYear;
+  const numMonth = +fliteredMonth;
+
+  if (
+    isNaN(numYear) ||
+    isNaN(numMonth) ||
+    numYear > 2030 ||
+    numYear < 2021 ||
+    numMonth < 1 ||
+    numMonth > 12
+  ) {
+    return {
+      props: { hasError: true },
+    };
+  }
+
+  const filteredEvents = await getFilteredEvents({
+    year: numYear,
+    month: numMonth,
+  });
+
+  return {
+    props: {
+      events: filteredEvents,
+      date: {
+        year: numYear,
+        month: numMonth,
+      },
+    },
+  };
+};
+
+export default slug;
 ```
 
