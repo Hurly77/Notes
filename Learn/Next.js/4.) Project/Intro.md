@@ -57,7 +57,7 @@ export default HomePage
 
 ## `pages/events/index.js`
 
-```js
+```jsx
 import { Fragment, useState, useEffect } from 'react';
 import {useRouter} from 'next/router'
 import EventList from '../../components/events/event-list';
@@ -94,7 +94,7 @@ export default eventsPage;
 
 ## `events/[eventId].js`
 
-```js
+```jsx
 import { Fragment } from 'react';
 import { getEventById, getAllEvents } from '../../helpers/utils';
 import EventSummary from '../../components/event-detail/event-summary';
