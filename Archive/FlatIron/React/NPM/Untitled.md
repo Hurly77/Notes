@@ -1,6 +1,6 @@
-## Getting Started
+## Getting Started With NPM
 
-to incorporate package.json You’ll have to do something like this in your index.html file
+To incorporate package.json You’ll have to do something like this in your index.html file
 
 ```html
 <script src="./node_modules/moment/moment.js"></script>

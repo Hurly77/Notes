@@ -1,4 +1,4 @@
-# how to setup auth with react and rails
+# how to setup AUTH with React and Rails
 
 ​	It doesn’t seem obvious at the time but, it really was quite simple to set up authentication, or at least the basics of it. As most Know, as your application grows it will become increasingly more difficult to balance authentication for that I would recommend a third party authentication, or even a backend api like firebase or or auth0, but for now if your just building a small application, which I wouldn’t realize it at the time but I was, so, lets get started. 
 
@@ -11,7 +11,7 @@ gem install rack-cors
 
 and what ever else gems you may need for you project
 
-on the react side your going to want to delete all the garage files that may come with the npx generator, now you should have an `index.js `that looks like this 
+on the react side after running npx, your should now have an `index.js `that looks like this 
 
 ```
 import React from 'react';
@@ -154,7 +154,7 @@ Now will want to a `sessions_store.rb` and a `cors.rb` if your don’t already.
 
 We need to give access to `cross orgin` so that cors will know what we are working with for our front end and backend
 
-```
+```ruby
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
     origins 'http://localhost:3000'
@@ -162,11 +162,12 @@ Rails.application.config.middleware.insert_before 0, Rack::Cors do
     resource '*',
       headers: :any,
       methods: [:get, :post, :put, :patch, :delete, :options, :head],
-      credentials: true // absoultly remember to set this in to true, and in your ajax to set credentials: 'include'
+      credentials: true 
+      # absoultly remember to set this in to true, and in your ajax to set  credentials: 'include'
   end
 
   allow do
-    origins 'http://localhost:5000' //5000 is the port your can set yours to what ever you want.
+    origins 'http://localhost:5000' #5000 is the port your can set yours to what ever you want.
 
     resource '*',
       headers: :any,
@@ -179,7 +180,7 @@ end
 
 and in your session_store 
 
-```
+```ruby
 Rails.application.config.session_store :cookie_store, key: "_your_app_name_here"
 ```
 
